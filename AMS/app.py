@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
@@ -10,7 +8,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo
 import logging
 import re
 
@@ -76,7 +74,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(message="Password is required.")])
     submit = SubmitField('Login')
 
-
 class ProfileForm(FlaskForm):
     old_password = PasswordField('Old Password', validators=[DataRequired()])
     new_password = PasswordField('New Password', validators=[DataRequired()])
@@ -125,35 +122,59 @@ def admin_dashboard():
         show_navbar=True
     )
 
+# Mark Attendance Route
 @app.route('/mark_attendance', methods=['GET', 'POST'])
 @login_required
 def mark_attendance():
     students = Student.query.all()
+    
     if request.method == 'POST':
-        date_str = request.form.get('date', '').strip()
         try:
+            # Process the form data
+            date_str = request.form.get('date', '').strip()
             attendance_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-        except ValueError:
-            flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
+            
+            for student in students:
+                status = request.form.get(str(student.id))
+                if status not in ['Present', 'Absent']:
+                    continue  # Ignore invalid statuses
+                
+                existing_record = Attendance.query.filter_by(student_id=student.id, date=attendance_date).first()
+                if existing_record:
+                    existing_record.status = status  # Update existing record
+                else:
+                    new_record = Attendance(student_id=student.id, date=attendance_date, status=status)
+                    db.session.add(new_record)
+            
+            db.session.commit()
+            flash('Attendance records updated successfully.', 'success')
+            return redirect(url_for('admin_dashboard'))
+        
+        except Exception as e:
+            app.logger.error(f"Error in mark_attendance: {str(e)}")
+            flash('An error occurred while submitting attendance.', 'danger')
             return redirect(url_for('mark_attendance'))
-        for student in students:
-            status = request.form.get(str(student.id))
-            if status not in ['Present', 'Absent']:
-                continue  # Ignore invalid statuses
-            # Check if attendance already marked for this date
-            existing_record = Attendance.query.filter_by(student_id=student.id, date=attendance_date).first()
-            if existing_record:
-                existing_record.status = status
-            else:
-                new_record = Attendance(student_id=student.id, date=attendance_date, status=status)
-                db.session.add(new_record)
-        db.session.commit()
-        flash('Attendance records updated successfully.', 'success')
-        return redirect(url_for('admin_dashboard'))
-    else:
-        today = date.today().isoformat()
-        return render_template('mark_attendance.html', students=students, today=today, show_navbar=True)
+    
+    today = date.today().isoformat()
+    return render_template('mark_attendance.html', students=students, today=today, show_navbar=True)
 
+
+# Check if Attendance Exists for a Given Date
+@app.route('/check_attendance/<date_str>', methods=['GET'])
+@login_required
+def check_attendance(date_str):
+    try:
+        # Parse the date string
+        attendance_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({'error': 'Invalid date format.'}), 400
+
+    # Check if any attendance records exist for the selected date
+    records_exist = Attendance.query.filter_by(date=attendance_date).first() is not None
+
+    return jsonify({'exists': records_exist}), 200
+
+# View Attendance Route
 @app.route('/view_attendance')
 @login_required
 def view_attendance():
@@ -178,6 +199,7 @@ def view_attendance():
         show_navbar=True
     )
 
+# Update Student Route
 @app.route('/update_student', methods=['POST'])
 @login_required
 def update_student():
@@ -218,6 +240,7 @@ def update_student():
         logging.error(f"Error in /update_student: {e}")
         return jsonify({'success': False, 'message': 'An unexpected error occurred.'}), 500
 
+# Student Details Route
 @app.route('/student/<int:student_id>')
 @login_required
 def student_details(student_id):
@@ -240,6 +263,7 @@ def student_details(student_id):
         flash('An unexpected error occurred.', 'danger')
         return redirect(url_for('view_attendance'))
 
+# Add Student via AJAX Route
 @app.route('/add_student_ajax', methods=['POST'])
 @login_required
 def add_student_ajax():
@@ -267,6 +291,7 @@ def add_student_ajax():
         logging.error(f"Error in /add_student_ajax: {e}")
         return jsonify({'success': False, 'message': 'An unexpected error occurred.'}), 500
 
+# Remove Student Route
 @app.route('/remove_student/<int:student_id>', methods=['POST'])
 @login_required
 def remove_student(student_id):
@@ -281,15 +306,15 @@ def remove_student(student_id):
         flash('An unexpected error occurred.', 'danger')
         return redirect(url_for('view_attendance'))
 
+# Profile Route for Admin to Change Password
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     form = ProfileForm()
     admin = current_user
-    if form.validate_on_submit():  # Use FlaskForm's validation method
+    if form.validate_on_submit():
         old_password = form.old_password.data
         new_password = form.new_password.data
-        confirm_password = form.confirm_password.data
 
         if not admin.check_password(old_password):
             flash('Old password is incorrect.', 'danger')
@@ -302,7 +327,7 @@ def profile():
 
     return render_template('profile.html', form=form, admin=admin, show_navbar=True)
 
-
+# Export Attendance Route
 @app.route('/export_attendance')
 @login_required
 def export_attendance():
