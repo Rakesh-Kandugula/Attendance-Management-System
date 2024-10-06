@@ -1,0 +1,206 @@
+/* static/styles.css */
+
+/* General Styles */
+body {
+    background-color: #ffffff;
+    color: #000000;
+    transition: background-color 0.3s, color 0.3s;
+}
+.bg-dark-custom {
+    background-color: #0d3b66; /* Dark blue */
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff; /* White text for better contrast */
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #ffcc00; /* Optional hover effect, a light yellow */
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #2e2e2e; /* Softer dark background */
+    color: #e0e0e0; /* Light grey text */
+}
+
+/* Adjust body background and text color */
+.dark-mode body {
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+}
+
+/* Adjust text inside tables */
+.dark-mode .table {
+    background-color: transparent;
+}
+
+.dark-mode .table td,
+.dark-mode .table th {
+    color: #e0e0e0;
+    background-color: #3a3a3a;
+    border-color: #555555;
+}
+
+/* Adjust table header background */
+.dark-mode .table thead th {
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+}
+
+/* Adjust links and action icons */
+.dark-mode a,
+.dark-mode .action-link {
+    color: #66a3ff;
+}
+
+.dark-mode a:hover,
+.dark-mode .action-link:hover {
+    color: #99c2ff;
+}
+
+/* Adjust form controls */
+.dark-mode .form-control {
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+    border-color: #666666;
+}
+
+.dark-mode .form-control::placeholder {
+    color: #cccccc;
+}
+
+/* Adjust buttons */
+.dark-mode .btn {
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+    border-color: #666666;
+}
+
+.dark-mode .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.dark-mode .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.dark-mode .btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000000;
+}
+
+.dark-mode .btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+/* Adjust labels and text */
+.dark-mode label,
+.dark-mode p,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+    color: #e0e0e0;
+}
+
+/* Adjust switch labels */
+.dark-mode .switch {
+    background-color: #555555;
+}
+
+.dark-mode .slider {
+    background-color: #777777;
+}
+
+.dark-mode input:checked + .slider {
+    background-color: #28a745;
+}
+
+.dark-mode input:checked + .slider:before {
+    background-color: #ffffff;
+}
+
+/* Adjust toggle switch */
+.dark-mode .slider.round:before {
+    background-color: #ffffff;
+}
+
+/* Adjust dropdown menus */
+.dark-mode .dropdown-menu {
+    background-color: #555555;
+    color: #e0e0e0;
+}
+
+.dark-mode .dropdown-item {
+    color: #e0e0e0;
+}
+
+.dark-mode .dropdown-item:hover {
+    background-color: #666666;
+}
+
+/* Adjust alert messages */
+.dark-mode .alert {
+    background-color: #555555;
+    color: #e0e0e0;
+    border-color: #666666;
+}
+
+/* Adjust table borders */
+.dark-mode .table-bordered th,
+.dark-mode .table-bordered td {
+    border: 1px solid #666666;
+}
+
+/* Adjust modal content */
+.dark-mode .modal-content {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+}
+
+/* Adjust input fields in edit mode */
+.dark-mode .edit-input {
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+    border-color: #666666;
+}
+
+/* Adjust placeholders in input fields */
+.dark-mode .edit-input::placeholder {
+    color: #cccccc;
+}
+
+/* Adjust action icons */
+.dark-mode .action-link i {
+    color: #e0e0e0;
+}
+
+.dark-mode .action-link:hover i {
+    color: #ffffff;
+}
+
+/* Adjust SweetAlert2 popups */
+.dark-mode .swal2-popup {
+    background-color: #4a4a4a !important;
+    color: #e0e0e0 !important;
+}
+
+.dark-mode .swal2-styled.swal2-confirm {
+    background-color: #28a745 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .swal2-styled.swal2-cancel {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+}
+
+/* Additional Custom Styles (Optional) */
+/* Add any additional custom styles below */

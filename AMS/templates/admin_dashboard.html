@@ -1,0 +1,42 @@
+<!-- templates/admin_dashboard.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Students</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_students }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Classes</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_classes }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Overall Attendance</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ "%.1f" % overall_attendance }}%</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Additional dashboard content can go here -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Additional scripts for dashboard if needed
+</script>
+{% endblock %}

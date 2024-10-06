@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Student{% endblock %}
+
+{% block content %}
+<h2>Edit Student</h2>
+<form method="post">
+    <input type="text" name="full_name" value="{{ student.full_name }}" required placeholder="Full Name"><br><br>
+    <input type="email" name="email" value="{{ student.email }}" required placeholder="Email"><br><br>
+    <button type="submit">Update Student</button>
+</form>
+<div>
+    <a href="{{ url_for('view_attendance') }}">← Back to View Attendance</a>
+</div>
+{% endblock %}
