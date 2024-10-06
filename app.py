@@ -13,7 +13,7 @@ import logging
 import re
 
 app = Flask(__name__)
-
+#aaaa
 # Configure the database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///attendance.db'
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with a strong secret key
