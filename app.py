@@ -327,51 +327,52 @@ def profile():
 
     return render_template('profile.html', form=form, admin=admin, show_navbar=True)
 
-# Export Attendance Route
 @app.route('/export_attendance')
 @login_required
 def export_attendance():
-    try:
-        students = Student.query.all()
-        # Get all unique dates from attendance records
-        dates = Attendance.query.with_entities(Attendance.date).distinct().order_by(Attendance.date).all()
-        dates = [date_tuple[0] for date_tuple in dates]  # Extract dates from tuples
+    students = Student.query.all()
+    # Get all unique dates from attendance records
+    dates = Attendance.query.with_entities(Attendance.date).distinct().order_by(Attendance.date).all()
+    dates = [date_tuple[0] for date_tuple in dates]  # Extract dates from tuples
 
-        # Prepare data for DataFrame
-        data = []
-        for idx, student in enumerate(students, start=1):
-            student_data = {
-                'Sl. No': idx,
-                'Full Name': student.full_name,
-                'Email': student.email
-            }
-            # Initialize attendance status for each date
-            attendance_status = {record_date.strftime('%d-%m-%Y'): '' for record_date in dates}
-            for record in student.attendance_records:
-                attendance_status[record.date.strftime('%d-%m-%Y')] = record.status
-            student_data.update(attendance_status)
-            data.append(student_data)
+    # Prepare data for DataFrame
+    data = []
+    for idx, student in enumerate(students, start=1):
+        student_data = {
+            'Sl. No': idx,
+            'Full Name': student.full_name,
+            'Email': student.email
+        }
+        # Initialize attendance status for each date
+        attendance_status = {record_date.strftime('%d-%m-%Y'): '' for record_date in dates}
+        for record in student.attendance_records:
+            attendance_status[record.date.strftime('%d-%m-%Y')] = record.status
+        student_data.update(attendance_status)
+        data.append(student_data)
 
-        # Create DataFrame
-        df = pd.DataFrame(data)
+    # Create DataFrame
+    df = pd.DataFrame(data)
 
-        # Reorder columns: 'Sl. No', 'Full Name', 'Email', date1, date2, ...
-        columns = ['Sl. No', 'Full Name', 'Email'] + [record_date.strftime('%d-%m-%Y') for record_date in dates]
-        df = df[columns]
+    # Reorder columns: 'Sl. No', 'Full Name', 'Email', date1, date2, ...
+    columns = ['Sl. No', 'Full Name', 'Email'] + [record_date.strftime('%d-%m-%Y') for record_date in dates]
+    df = df[columns]
 
-        # Save DataFrame to an Excel file in memory
-        output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Attendance')
+    # Save DataFrame to an Excel file in memory
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Attendance')
+        # No need to call writer.save() here
 
-        output.seek(0)
+    output.seek(0)
 
-        # Send the Excel file as a response
-        return send_file(output, download_name='attendance.xlsx', as_attachment=True)
-    except Exception as e:
-        logging.error(f"Error in /export_attendance: {e}")
-        flash('An unexpected error occurred while exporting attendance.', 'danger')
-        return redirect(url_for('view_attendance'))
+    # Send the Excel file as a response
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        download_name='attendance.xlsx',
+        as_attachment=True
+    )
+
 
 if __name__ == '__main__':
     # Create the database tables if they don't exist
