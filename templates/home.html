@@ -2,7 +2,14 @@
 
 {% block content %}
 <div class="container text-center mt-5">
-    <h1 class="mb-4">Welcome to the Attendance Management System</h1>
-    <a href="{{ url_for('admin_login') }}" class="btn btn-primary btn-lg">Admin Login</a>
+    <h1 class="mb-4">Attendance Management System</h1>
+    <!-- Admin Login Button with Icon -->
+    <a href="{{ url_for('admin_login') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-user-shield"></i> Admin Login
+    </a>
+    <!-- Greyed out Student Login Button with Icon -->
+    <button type="button" class="btn btn-secondary btn-lg ml-3" disabled data-toggle="tooltip" data-placement="top" title="Coming Soon!!">
+        <i class="fas fa-user"></i> Student Login
+    </button>
 </div>
 {% endblock %}
