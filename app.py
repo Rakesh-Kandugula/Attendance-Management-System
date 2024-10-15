@@ -387,4 +387,4 @@ if __name__ == '__main__':
             db.session.commit()
             print('Admin user created with username "admin" and password "admin". Please change the password immediately.')
 
-    app.run(debug=True)
+    app.run()
